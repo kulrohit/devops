@@ -4,7 +4,7 @@ node default {
   include apache
 
 
-user { 'apche':
+user { 'apache':
   ensure     => present,
   uid        => '1080',
   gid        => '1080',
