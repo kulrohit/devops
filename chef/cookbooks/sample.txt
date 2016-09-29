@@ -1,0 +1,91 @@
+#knife  cookbook create test_atr
+#vim /root/cookbooks/test_atr/attributes/default.rb 
+default[:redis][:dir]       = "/etc/redis"
+default[:redis][:data_dir]  = "/var/lib/redis"
+default[:redis][:log_dir]   = "/var/log/redis"
+wq!
+
+#cat /root/cookbooks/test_atr/recipes/default.rb 
+directory node[:redis][:dir] do
+  owner "root"
+  mode "0755"
+  action :create
+end
+
+directory node[:redis][:data_dir] do
+  owner "root"
+  mode "0755"
+  action :create
+end
+
+directory node[:redis][:log_dir] do
+  mode 0755
+  owner node[:redis][:user]
+  action :create
+end
+~
+~
+wq!
+#knife cookbook upload test_atr 
+#knife node run_list add <nodeNAME> "recipe[test_atr]" 
+On the NODE 
+
+# chef-client 
+Starting Chef Client, version 12.11.18
+resolving cookbooks for run list: ["test_atr"]
+Synchronizing Cookbooks:
+  - test_atr (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 3 resources
+Recipe: test_atr::default
+  * directory[/etc/redis] action create (up to date)
+  * directory[/var/lib/redis] action create
+    - create new directory /var/lib/redis
+    - change mode from '' to '0755'
+    - change owner from '' to 'root'
+    - restore selinux security context
+  * directory[/var/log/redis] action create
+    - create new directory /var/log/redis
+    - change mode from '' to '0755'
+    - restore selinux security context
+
+Running handlers:
+Running handlers complete
+
+
+On the workstation === EDIT the attribute for testing purpose ====
+#vi /root/cookbooks/test_atr/attributes/default.rb 
+default[:redis][:dir]       = "/etc/redis1"  ##change folder name 
+default[:redis][:data_dir]  = "/var/lib/redi1s"  ## change folder name 
+default[:redis][:log_dir]   = "/var/log/redi1s"  ## change folder name
+
+#knife cookbook upload test_atr 
+# chef-client 
+Starting Chef Client, version 12.11.18
+resolving cookbooks for run list: ["test_atr"]
+Synchronizing Cookbooks:
+  - test_atr (0.1.0)
+Installing Cookbook Gems:
+Compiling Cookbooks...
+Converging 3 resources
+Recipe: test_atr::default
+  * directory[/etc/redis1] action create
+    - create new directory /etc/redis1
+    - change mode from '' to '0755'
+    - change owner from '' to 'root'
+    - restore selinux security context
+  * directory[/var/lib/redi1s] action create
+    - create new directory /var/lib/redi1s
+    - change mode from '' to '0755'
+    - change owner from '' to 'root'
+    - restore selinux security context
+  * directory[/var/log/redi1s] action create
+    - create new directory /var/log/redi1s
+    - change mode from '' to '0755'
+    - restore selinux security context
+
+Running handlers:
+Running handlers complete
+Chef Client finished, 3/3 resources updated in 05 seconds
+
