@@ -1,0 +1,42 @@
+require 'puppet/resource'
+require 'puppet/resource/catalog'
+require 'fileutils'
+require 'rubygems'
+require 'facter'
+require 'net/http'
+require 'uri'	
+
+Puppet::Type.type(:download).provide(:download) do
+	desc "repo server"
+
+  def create
+  repodownload
+	end
+
+  def destroy
+    FileUtils.rm_ft @resource[:path]
+  end
+
+  def exists?
+		File.exists?(@resource[:path])
+  end
+
+	def repodownload
+		uri = URI(@resource[:name])
+		username = "deployment-release"
+		password = "deployment-release"
+
+		http = Net::HTTP.new(uri.host, uri.port)
+		request = Net::HTTP::Get.new(uri.request_uri)
+	  http.use_ssl = true
+		request.basic_auth(username, password)
+		response = http.request(request)
+		if response.code == "200"
+			open @resource[:path], 'wb' do | io |
+        io.write response.read_body
+      end
+		else
+      fail("Check url")
+		end
+	end
+end
