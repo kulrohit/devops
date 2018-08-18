@@ -1,2 +1,0 @@
-0x0001 2015-08-27T07:24:11UTC 2020-08-26T07:24:11UTC /CN=Puppet CA: puppet-master.whitehedge_dom
-0x0002 2015-08-27T07:24:13UTC 2020-08-26T07:24:13UTC /CN=puppet-master.whitehedge_dom
